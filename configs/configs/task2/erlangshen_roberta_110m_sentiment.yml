@@ -1,0 +1,25 @@
+# Task identifier
+task: 2
+
+# Model architecture
+pretrained_model: IDEA-CCNL/Erlangshen-Roberta-110M-Sentiment
+drop_prob: 0.3
+max_seq_len: 512
+
+# Hyperparameters
+batch_size: 16
+accum_steps: 8
+learning_rate: 5e-5
+num_epochs: 10
+num_workers: 4
+
+# Seed
+seed: 0
+
+# Path
+model_path: ''
+output_path: ''
+models_dir: ./models
+
+# Public Score
+score: 0.83890

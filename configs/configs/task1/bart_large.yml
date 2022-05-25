@@ -1,0 +1,22 @@
+# Task identifier
+task: 1
+
+# Model architecture
+pretrained_model: fnlp/bart-large-chinese
+drop_prob: 0.1
+max_seq_len: 512
+
+# Hyperparameters
+batch_size: 4
+accum_steps: 16
+learning_rate: 5e-5
+num_epochs: 5
+num_workers: 4
+
+# Seed
+seed: 0
+
+# Path
+model_path: ''
+output_path: ''
+models_dir: ./models
