@@ -59,6 +59,14 @@ tqdm
 
 ---
 
+## Easy run
+Run below commad to easily train both task with all `YAML` configuration in `configs` folder:
+```
+python3 train_script.py
+```
+
+---
+
 ## Model Architecture
 Model architecture is in [Network.py](https://github.com/ncku-yee/NLP-2022-Aspect-Based-Sentiment-Analysis/blob/master/Network.py).  
 By default, class `MultilabelClassifier` is for **task1** and class `SentimentClassifier` is for **task2**.
