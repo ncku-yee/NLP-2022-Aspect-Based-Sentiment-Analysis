@@ -16,6 +16,8 @@ MODELS = [
     'hfl/chinese-roberta-wwm-ext-large',
     'symanto/xlm-roberta-base-snli-mnli-anli-xnli',
     'nghuyong/ernie-gram-zh',
+    'ckiplab/bert-base-chinese-ws',
+    'ckiplab/albert-base-chinese-ws',
 ]
 
 # Model for Task 1.
