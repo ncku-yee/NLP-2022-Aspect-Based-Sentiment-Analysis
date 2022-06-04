@@ -20,3 +20,6 @@ seed: 0
 model_path: ''
 output_path: ''
 models_dir: ./models
+
+# Public Score
+score: 0.83411
