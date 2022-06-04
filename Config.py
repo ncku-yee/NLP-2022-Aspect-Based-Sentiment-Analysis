@@ -47,6 +47,7 @@ class BaseConfig():
         parser.add_argument('--model_path', type=str, default='', help='Model save path')
         parser.add_argument('--models_dir', type=str, default='./models', help='Models directory(default: ./models)')
         parser.add_argument('--output_path', type=str, default='', help='Output path')
+        parser.add_argument('--logs_dir', type=str, default='./logs', help='Logs directory(default: ./logs)')
 
         return parser
 
@@ -86,6 +87,11 @@ class TrainConfig(BaseConfig):
         else:
             output_path = args.output_path
         args.output_path = output_path
+
+        """ Logs directory """
+        os.makedirs(args.logs_dir, exist_ok=True)
+        logs_path = f"task{args.task}_{args.pretrained_model.split('/')[-1].replace('-', '_').lower()}.txt"
+        args.logs_path = os.path.join(args.logs_dir, logs_path)
 
         # Visualize the configuration.
         for k, v in sorted(vars(args).items()):

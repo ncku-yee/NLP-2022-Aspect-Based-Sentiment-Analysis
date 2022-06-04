@@ -22,6 +22,12 @@ if __name__ == "__main__":
 
     args = TrainConfig().parse_args()
 
+    # open log file to save log outputs
+    log_f = open(f"{args.logs_path}", 'w')
+    # Write Configuration into log file.
+    for k, v in sorted(vars(args).items()):
+        log(log_f, f"{k.ljust(20, ' ')}: {v}")
+
     # Fixed seed
     same_seeds(args.seed)
 
@@ -84,6 +90,7 @@ if __name__ == "__main__":
         num_classes = len(classes)
         model = SentimentClassifier(num_classes, args.pretrained_model, aspects, drop_prob=args.drop_prob).to(device)
 
+    log(log_f, model)
     # if args.verbose:
     #     print(model)
 
@@ -116,6 +123,7 @@ if __name__ == "__main__":
                     train_loader,   # Dataloader
                     aspect2id,      # aspect to index mapping
                     epoch,          # Current epoch
+                    log_f,          # Logging file
                     args            # Arguments
                 )
             # Validation
@@ -129,6 +137,7 @@ if __name__ == "__main__":
                     best_f1,        # Current best f1 score(Task 1)
                     best_acc,       # Current best accuracy(Task 2)
                     epoch,          # Current epoch
+                    log_f,          # Logging file
                     args            # Arguments
                 )
     # Just Validation
@@ -150,6 +159,7 @@ if __name__ == "__main__":
                 best_f1=np.inf,     # Current best f1 score(Task 1)
                 best_acc=np.inf,    # Current best accuracy(Task 2)
                 epoch=-1,           # Current epoch
+                log_f=log_f,        # Logging file
                 args=args           # Arguments
             )
 

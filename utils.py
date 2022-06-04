@@ -25,6 +25,11 @@ def fp16_accelerator():
     device = accelerator.device
     return accelerator, device
 
+""" Write logging """
+def log(log_f, text):
+    log_f.write(str(text)+'\n')
+    log_f.flush()
+
 """ Task 1 Metrics """
 # Ref: https://jesusleal.io/2021/04/21/Longformer-multilabel-classification/
 def multi_label_metrics(preds, labels, threshold=0.5):
@@ -78,6 +83,7 @@ def train(
         dataloader,     # Dataloader
         aspect2id,      # aspect to index mapping
         epoch,          # Current epoch
+        log_f,          # Logging file
         args            # Arguments
     ):
 
@@ -131,9 +137,11 @@ def train(
                 y_true = torch.cat(y_true, axis=0)          # Concatenate the list of true label batch.
                 train_f1, train_acc = multi_label_metrics(y_pred, y_true)
                 print(f"Epoch {epoch + 1} | Step {step} | loss = {train_loss / args.logging_step:.3f}, acc = {train_acc:.3f}, f1 = {train_f1:.3f}")
+                log(log_f, f"Epoch {epoch + 1} | Step {step} | loss = {train_loss / args.logging_step:.3f}, acc = {train_acc:.3f}, f1 = {train_f1:.3f}")
                 y_pred, y_true = [], []
             else:
                 print(f"Epoch {epoch + 1} | Step {step} | loss = {train_loss / args.logging_step:.3f}, acc = {train_acc / args.logging_step:.3f}")
+                log(log_f, f"Epoch {epoch + 1} | Step {step} | loss = {train_loss / args.logging_step:.3f}, acc = {train_acc / args.logging_step:.3f}")
             train_loss, train_acc = 0, 0
         # verbose is False: Show the final performance of training stage.
         if not args.verbose and step == len(dataloader):
@@ -142,8 +150,10 @@ def train(
                 y_true = torch.cat(y_true, axis=0)          # Concatenate the list of true label batch.
                 train_f1, train_acc = multi_label_metrics(y_pred, y_true)
                 print(f"Epoch {epoch + 1} | loss = {train_loss / len(dataloader):.3f}, acc = {train_acc:.3f}, f1 = {train_f1:.3f}")
+                log(log_f, f"Epoch {epoch + 1} | loss = {train_loss / len(dataloader):.3f}, acc = {train_acc:.3f}, f1 = {train_f1:.3f}")
             else:
                 print(f"Epoch {epoch + 1} | loss = {train_loss / len(dataloader):.3f}, acc = {train_acc / len(dataloader):.3f}")
+                log(log_f, f"Epoch {epoch + 1} | loss = {train_loss / len(dataloader):.3f}, acc = {train_acc / len(dataloader):.3f}")
     return model, optimizer
 
 
@@ -157,10 +167,12 @@ def valid(
         best_f1,        # Current best f1 score(Task 1)
         best_acc,       # Current best accuracy(Task 2)
         epoch,          # Current epoch
+        log_f,          # Logging file
         args            # Arguments
     ):
     model.eval()
     print("Evaluating Dev Set ...")
+    log(log_f, "Evaluating Dev Set ...")
     with torch.no_grad():
         dev_loss, dev_acc = 0, 0
         y_pred, y_true = [], []
@@ -193,19 +205,23 @@ def valid(
             y_true = torch.cat(y_true, axis=0)          # Concatenate the list of true label batch.
             dev_f1, dev_acc = multi_label_metrics(y_pred, y_true)
             print(f"Validation | Epoch {epoch + 1} | loss = {dev_loss / len(dataloader):.3f}, acc = {dev_acc:.3f}, f1 = {dev_f1:.3f}")
+            log(log_f, f"Validation | Epoch {epoch + 1} | loss = {dev_loss / len(dataloader):.3f}, acc = {dev_acc:.3f}, f1 = {dev_f1:.3f}")
             y_pred, y_true = [], []
 
             # Save the model state_dict.
             if dev_f1 > best_f1:
                 print(f"Saving Model with Epoch {epoch + 1}...")
+                log(log_f, f"Saving Model with Epoch {epoch + 1}...")
                 torch.save(model.state_dict(), args.model_path)
                 best_f1 = dev_f1
         else:
             print(f"Validation | Epoch {epoch + 1} | loss = {dev_loss / len(dataloader):.3f}, acc = {dev_acc / len(dataloader):.3f}")
+            log(log_f, f"Validation | Epoch {epoch + 1} | loss = {dev_loss / len(dataloader):.3f}, acc = {dev_acc / len(dataloader):.3f}")
 
             # Save the model state_dict.
             if dev_acc / len(dataloader) > best_acc:
                 print(f"Saving Model with Epoch {epoch + 1}...")
+                log(log_f, f"Saving Model with Epoch {epoch + 1}...")
                 torch.save(model.state_dict(), args.model_path)
                 best_acc = dev_acc / len(dataloader)
     return best_acc, best_f1
