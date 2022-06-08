@@ -55,9 +55,9 @@ if __name__ == "__main__":
     #     accelerator, device = fp16_accelerator()
 
     # Reading files
-    train_ids, train_reviews, train_sentiments,  = read_data("train.csv", args.task)
-    dev_ids, dev_reviews, dev_sentiments = read_data("dev.csv", args.task)
-    test_ids, test_reviews, test_sentiments = read_data("test.csv", args.task)
+    train_ids, train_reviews, train_sentiments,  = read_data("./data/train.csv", args.task)
+    dev_ids, dev_reviews, dev_sentiments = read_data("./data/dev.csv", args.task)
+    test_ids, test_reviews, test_sentiments = read_data("./data/test.csv", args.task)
 
     # Preprocessing
     replace_symbols = ["\u3000", "\\n", "\\", " "]
